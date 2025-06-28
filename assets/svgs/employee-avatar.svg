@@ -1,0 +1,20 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle for head -->
+  <circle cx="30" cy="30" r="24" fill="#E0E0E0"/>
+
+  <!-- Face details (simplified) -->
+  <circle cx="23" cy="28" r="3" fill="#606060"/> <!-- Left eye -->
+  <circle cx="37" cy="28" r="3" fill="#606060"/> <!-- Right eye -->
+  <path d="M25 35 Q30 38 35 35" stroke="#606060" stroke-width="2" stroke-linecap="round"/> <!-- Mouth -->
+
+  <!-- Builder's Cap (Hard Hat) -->
+  <!-- Main dome of the cap -->
+  <path d="M15 20 C15 10 45 10 45 20 L48 25 C48 30 12 30 12 25 L15 20 Z" fill="#9E9E9E" stroke="#757575" stroke-width="1.5"/>
+  <!-- Brim of the cap -->
+  <path d="M10 24 Q30 28 50 24 L50 27 Q30 31 10 27 L10 24 Z" fill="#757575" stroke="#616161" stroke-width="1"/>
+  <!-- Small detail on top of the cap -->
+  <circle cx="30" cy="18" r="2" fill="#BDBDBD"/>
+
+  <!-- Neck/Shoulder base -->
+  <rect x="25" y="48" width="10" height="12" rx="3" fill="#BDBDBD"/>
+</svg>

@@ -1,0 +1,27 @@
+{
+    "appName": "HandyHire",
+    "tagline": "Find trusted workers near you",
+    "loading": "Loading...",
+    "welcome": {
+      "title": "Welcome to HandyHire",
+      "subtitle": "Your go-to place for quick hiring",
+      "getStarted": "Get Started",
+      "login": "Login",
+      "register": "Register",
+      "description": "Find the right employees for the job, or register as an employee to offer your services.",
+      "hireButton": "Hire an Employee",
+      "panelButton": "Employee Panel"
+    },
+    "profile": {
+      "title": "Your Profile",
+      "edit": "Edit Profile",
+      "logout": "Logout"
+    },
+    "job": {
+      "availableJobs": "Available Jobs",
+      "applied": "Jobs You've Applied",
+      "details": "Job Details",
+      "apply": "Apply Now"
+    }
+  }
+  
