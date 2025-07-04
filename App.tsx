@@ -38,6 +38,7 @@ export default function App() {
               <Stack.Screen name="Register" component={RegisterScreen} />
               <Stack.Screen name="EmployProfile" component={DrawerNavigator} />
               <Stack.Screen name="JobDetailsScreen" component={JobDetailScreen} />
+        
 
             </Stack.Navigator>
           </NavigationContainer>
