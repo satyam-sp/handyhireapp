@@ -13,7 +13,7 @@ export const useInstantJobCable = (subscriptionRef: any, id?: number): void => {
 
   useEffect(() => {
     const connect = async () => {
-      const employee = await getStorageData('employee');
+      const employee = await getStorageData('user');
       const employeeId = id || employee?.id;
 
       if (!employeeId) {

@@ -14,7 +14,7 @@ const axiosInstance  = axios.create({
 axiosInstance.interceptors.request.use(
     async (config) => {
       try {
-        const token = await getToken('employee');
+        const token = await getToken('user');
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
     (response) => response,
     async(error) => {
       if (error.response?.status === 401) {
-        await removeStorageData('employee');
+        await removeStorageData('user');
 
         showToastMessage('error', 'Unauthorized', 'Redirecting ...');
         

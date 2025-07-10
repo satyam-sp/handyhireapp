@@ -37,8 +37,8 @@ const EmployeePanel = () => {
         // navigation.navigate('Dashboard');
         try {
             const response = await dispatch(loginEmployee(data) as any).unwrap();
-            const result = { ...response.employee, token: response.token }
-            await setStorageData('employee', JSON.stringify(result))
+            const result = { ...response.employee, token: response.token, role: 'employee' }
+            await setStorageData('user', JSON.stringify(result))
             navigation.navigate('EmployProfile');
         } catch (e) {
 

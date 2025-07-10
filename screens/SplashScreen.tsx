@@ -30,12 +30,31 @@ const SplashScreen = () => {
     const checkAuth = async () => {
       await new Promise(resolve => setTimeout(resolve, 3000)); // show splash for 1.5s
       try {
-        const employee = await getStorageData('employee');
-        if (!!employee) {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'EmployProfile' }]
-          });
+        const user = await getStorageData('user');
+        if (!!user) {
+          if(user.role === 'user'){
+            if(!user.full_name || user.full_name.trim() === ''){
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'FullNameScreen' }]
+              });
+            }else{
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'UserProfile' }]
+              });
+            }
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'UserProfile' }]
+            });
+          }else{
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'EmployProfile' }]
+            });
+          }
+        
         } else {
           navigation.reset({
             index: 0,

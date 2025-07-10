@@ -16,6 +16,7 @@ import RatingSummarySection from '../../components/employee/RatingSummary';
 import coverImage from "../../assets/cities/indore.jpeg";
 import VideoProcessingAndUpload from '../../components/upload/VideoProcessingAndUpload';
 import StoriesListScreen from '../../components/story-carousel';
+import { setVideos } from '../../slices/videoUpload.slice';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const ProfileScreen = () => {
   React.useEffect(() => {
     if (user) {
       setLocalUser(user);
+      dispatch(setVideos(user))
     }
   }, [user]);
 
@@ -85,8 +87,7 @@ const ProfileScreen = () => {
         totalJobs={localUser.total_jobs_count} // Assuming 'total_jobs_count' exists on user object
         reviewsCount={localUser.reviews_count}
       />
-      <VideoProcessingAndUpload />
-      <StoriesListScreen />
+      <StoriesListScreen user={localUser} />
 
       <ProfileSection title="Basic Information" editing={editing.basic} onEdit={() => toggleEdit('basic')}>
         <ProfileInfoRow label="Full Name" value={localUser.full_name} editing={editing.basic} onChange={(val: any) => updateField('full_name', val)} />

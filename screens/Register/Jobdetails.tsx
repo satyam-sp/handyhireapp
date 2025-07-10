@@ -33,8 +33,8 @@ const Step3JobDetails = ({ onNext }: any) => {
         dispatch(appendEmployeeRegisterData(data))
         try{
             const response = await dispatch(registerEmployee({...employeeData,...data}) as any).unwrap();
-            const result = {...response.employee, token: response.token }
-            await setStorageData('employee', JSON.stringify(result))
+            const result = {...response.employee, token: response.token, role: 'employee' }
+            await setStorageData('user', JSON.stringify(result))
             navigation.navigate('EmployProfile');
         }catch(e){
 

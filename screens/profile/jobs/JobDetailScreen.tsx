@@ -10,8 +10,9 @@ import ImageGridWithViewer from '../../../components/image-grid/ImageGridWithVie
 import { useThrottleCallback } from '../../../components/hooks/useThrottleCallback';
 import SoftButton from '../../../components/Button/SoftButton';
 import TickMark from '../../../assets/tick-mark.png'
+import TimeSlotSelector from '../../../components/TimeSlotSelector';
 const screenHeight = Dimensions.get('window').height;
-
+const DEFAULT_TIME_SLOT = "10:00 AM - 12:00 PM"
 export default function JobDetailScreen({ route }: any) {
     const { job_id } = route.params;
     const navigation = useNavigation();
@@ -21,6 +22,7 @@ export default function JobDetailScreen({ route }: any) {
     const { currentInstantJob: job, isLoading, applyJobLoading } = useSelector((state: any) => state.instantjobs);
     const employee = useSelector((state: any) => state.register.employee);
     const [priceInput, setPriceInput] = useState('');
+    const [timeInput, setTimeSlot] = useState(DEFAULT_TIME_SLOT);
     const geocoords = useSelector((state: any) => state.instantjobs.geocoords);
 
     useEffect(() => {
@@ -154,6 +156,7 @@ export default function JobDetailScreen({ route }: any) {
                             </View>
                         </View>
                     )}
+                    <TimeSlotSelector date={job.slot_date} bestTime={job.slot_time} setTimeSlot={setTimeSlot} time={timeInput}  />
                 </View>
             </ScrollView>
 

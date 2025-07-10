@@ -6718,6 +6718,11 @@ react-native-video-trim@^5.0.2:
   resolved "https://registry.yarnpkg.com/react-native-video-trim/-/react-native-video-trim-5.0.2.tgz#1da502f729f10f6402f0ddf879f84bbad53e8101"
   integrity sha512-vzPbk5R0XU+Mt0rpRotg4IgmZPg/9Nzo/V0NRI3QaIidd0ei/dvNtRyZnLz049H67mFSWrJ4RlY9VsLCvF3Lgw==
 
+react-native-video@^6.16.0:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-6.16.0.tgz#78ad0affc6f4a09c366d83532b36be562149d3f5"
+  integrity sha512-FS9lb7qCd5wN6KAifziXH8PogAkAPy5YD8lJ2t/1FkBG+09hD+CsP4C7EfWFzvY/RxhO30iVZ1g5ZquofKIzrg==
+
 react-native@0.80.0:
   version "0.80.0"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.80.0.tgz#574bf976c1e03d27191100179a8e9ec0f19d42ef"

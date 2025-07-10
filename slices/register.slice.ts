@@ -4,7 +4,7 @@ import axiosInstance from '../services/axiosInstance'
 import { errorBlock, showToastMessage } from "../utils/helper";
 import axios from "axios";
 import { getToken, removeStorageData } from "../utils/storage-helper";
-
+import { uploadVideo } from "./videoUpload.slice";
 
 export const registerEmployee = createAsyncThunk<any, any, { rejectValue: any }>(
   'register@employee',
@@ -74,7 +74,6 @@ export const uploadEmployeeImage = createAsyncThunk<any, any, { rejectValue: any
 
 export const logout = createAsyncThunk('logout', async () =>{
   try {
-    await removeStorageData('employee');
     await removeStorageData('user');
   }catch(e){
     
@@ -135,6 +134,8 @@ export const registerSlice = createSlice({
       state.error = action.payload;
       state.isError = true;
     });
+  
+    
   }
 })
 
