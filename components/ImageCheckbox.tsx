@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   selected: {
-    borderColor: '#007AFF',
+    borderColor: '#075e54',
     backgroundColor: '#e6f0ff',
   },
   image: {

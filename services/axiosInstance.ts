@@ -4,7 +4,7 @@ import { navigate } from '../utils/navigateRef'; // <-- import navigate function
 import { showToastMessage } from '../utils/helper';
 
 const axiosInstance  = axios.create({
-    baseURL: 'https://fab0-2401-4900-1c09-1211-b5fa-2298-fb28-8cd4.ngrok-free.app',
+    baseURL: 'https://eb9aea6edb69.ngrok-free.app',
     headers: {
         'Content-Type': 'application/json'
     }

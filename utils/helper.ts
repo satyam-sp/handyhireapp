@@ -22,6 +22,29 @@ export const formatToINRCurrency = (value: string) => {
     return '₹' + new Intl.NumberFormat('en-IN').format(Number(numericValue));
 };
 
+// --- Helper Functions ---
+// Modified truncateText to allow for line limits rather than just word limits
+export const truncateText = (text: string, maxLines: number, fontSettings: { fontSize: number, lineHeight: number, width: number }) => {
+  if (!text) return '';
+
+  // A rough estimation of characters per line based on font size and line height.
+  // This is not precise as character widths vary, but provides a reasonable guess.
+  // Assuming an average character width of about 0.6 * fontSize
+  const charsPerLine = Math.floor(fontSettings.width / (fontSettings.fontSize * 0.6));
+  const maxChars = charsPerLine * maxLines;
+
+  if (text.length > maxChars) {
+      // Find the last space within the maxChars limit to avoid cutting words
+      let truncated = text.substring(0, maxChars);
+      const lastSpace = truncated.lastIndexOf(' ');
+      if (lastSpace !== -1) {
+          truncated = truncated.substring(0, lastSpace);
+      }
+      return truncated + '...';
+  }
+  return text;
+};
+
 
 export const errorBlock = (err: any) => {
   let errorMessage = 'Something went wrong';

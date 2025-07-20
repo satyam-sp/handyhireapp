@@ -51,7 +51,7 @@ const generateTimeSlots = (time: any): TimeSlot[] => {
 
 
 
-const TimeSlotSelector = ({date, time, bestTime, setTimeSlot}: any) => {
+const TimeSlotSelector = ({date, time, bestTime, setTimeSlot, isUserView, hideTitle }: any) => {
     const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
 
     const timeSlots = generateTimeSlots(bestTime);
@@ -84,8 +84,8 @@ const TimeSlotSelector = ({date, time, bestTime, setTimeSlot}: any) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Select a Time Slot: for <Text style={styles.dateTitle}>{dayjs(date).format('DD MMM YYYY')}</Text> </Text>
-            <Text style={styles.noteText}>"Note: The dashed border indicates the best time to pick."</Text>
+            {!hideTitle && <Text style={styles.title}> Select a Time Slot {!isUserView && <Text style={styles.dateTitle}>{dayjs(date).format('DD MMM YYYY')}</Text>} </Text>}
+            {!isUserView && <Text style={styles.noteText}>"Note: The dashed border indicates the best time to pick."</Text>}
             <View style={styles.gridContainer}>
                 {rows.map((row, rowIndex) => (
                     <View key={rowIndex} style={styles.gridRow}>
@@ -119,7 +119,7 @@ const TimeSlotSelector = ({date, time, bestTime, setTimeSlot}: any) => {
                     </View>
                 ))}
             </View>
-            {selectedSlotId && (
+            {selectedSlotId && !isUserView && (
                 <Text style={styles.selectionInfo}>
                     You selected: {timeSlots.find(slot => slot.id === selectedSlotId)?.label}
                 </Text>
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 5, // Space between buttons in the same row
     },
     selectedSlotButton: {
-        backgroundColor: '#007bff', // Blue background for selected
+        backgroundColor: '#075e54', // Blue background for selected
         borderColor: '#0056b3',
     },
     slotText: {

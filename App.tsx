@@ -5,8 +5,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import SplashScreen from './screens/SplashScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import EmployeePanel from './screens/EmplyeePanel';
-import EmployeeProfileScreen from './screens/profile/employee';
-import DrawerNavigator from './components/DrawerNavigator';
+import DrawerNavigator from './components/navigators/DrawerNavigator';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from "react-redux";
@@ -18,7 +17,10 @@ import './i18n'
 import StoriesViewerScreen from './screens/StoriesViewerScreen';
 import UserAuthScreen from './screens/user-auth';
 import FullNameScreen from './screens/user-auth/FullName';
-import UserDrawerNavigator from './components/UserDrawerNavigator';
+import UserDrawerNavigator from './components/navigators/UserDrawerNavigator';
+import TabNavigator from './components/navigators/TabNavigator';
+import InstantJobPostScreen from './screens/instant-jobs/index';
+import AddressManagementScreen from './screens/address/AddressManagement';
  type RootStackParamList = {
   Splash: undefined;
   Welcome: undefined;
@@ -30,6 +32,9 @@ import UserDrawerNavigator from './components/UserDrawerNavigator';
   UserAuth: undefined,
   FullNameScreen: undefined,
   UserProfile: undefined,
+  MainTabs: undefined;
+  InstantJobPost: undefined;
+  AddressManagement: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -46,11 +51,15 @@ export default function App() {
               <Stack.Screen name="Register" component={RegisterScreen} />
               <Stack.Screen name="UserAuth" component={UserAuthScreen} />
               <Stack.Screen name='FullNameScreen' component={FullNameScreen} />
-              <Stack.Screen name="EmployProfile" component={DrawerNavigator} />
               <Stack.Screen name="JobDetailsScreen" component={JobDetailScreen} />
               <Stack.Screen name='StoriesViewer' component={StoriesViewerScreen} />
               <Stack.Screen name='UserProfile' component={UserDrawerNavigator} />
-        
+              <Stack.Screen name="EmployProfile" component={DrawerNavigator} />
+
+              <Stack.Screen name='AddressManagement' component={AddressManagementScreen} />
+
+              <Stack.Screen name='InstantJobPost' component={InstantJobPostScreen}  options={{ headerShown: false }}/>
+
 
             </Stack.Navigator>
           </NavigationContainer>

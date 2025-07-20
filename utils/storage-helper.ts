@@ -30,6 +30,8 @@ export const removeStorageData = async (key: string) => {
 export const getToken = async (key: string) => {
     try {
       const value = await AsyncStorage.getItem(key);
+      debugger
+
       return value && JSON.parse(value).token;
     } catch (e) {
       console.error('Reading error', e);

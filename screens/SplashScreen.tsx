@@ -8,13 +8,15 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { loadAndSetInitialLanguage } from '../utils/helper';
 import { useTranslation } from 'react-i18next';
+import { setUserData } from '../slices/userAuth.slice';
+import { useDispatch } from 'react-redux';
 
 const SplashScreen = () => {
 
 
   type NavigationProp = NativeStackNavigationProp<any>;
   const navigation = useNavigation<NavigationProp>();
-
+  const dispatch  =  useDispatch();
   const [loading, setLoading] = useState(true);
 
   const { t } = useTranslation();
@@ -39,6 +41,7 @@ const SplashScreen = () => {
                 routes: [{ name: 'FullNameScreen' }]
               });
             }else{
+              dispatch(setUserData(user))
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'UserProfile' }]
