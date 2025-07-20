@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "244924518387",
+    "project_id": "handyhire-fe20a",
+    "storage_bucket": "handyhire-fe20a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244924518387:android:9262c86ea2f3e7ef9f0c86",
+        "android_client_info": {
+          "package_name": "com.handyhireapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA61BNApbetavbLKDkBHGCtSYJcndCD-cs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

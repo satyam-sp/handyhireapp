@@ -4,6 +4,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import TabNavigator from './TabNavigator';
 import CustomDrawerContent from './CustomDrawerContent'; // Import your custom drawer content component
 import AddressManagementScreen from '../../screens/address/AddressManagement';
+import NotificationListener from '../../screens/NotificationListner';
 
 // You can add more screens like Settings, Logout etc.
 // import SettingsScreen from '../../screens/SettingsScreen'; // Example
@@ -13,6 +14,7 @@ const Drawer = createDrawerNavigator();
 
 export default function UserDrawerNavigator() {
   return (
+    <><NotificationListener/>
     <Drawer.Navigator
       // Use the custom drawer content component
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -60,5 +62,6 @@ export default function UserDrawerNavigator() {
       {/* <Drawer.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} /> */}
       {/* <Drawer.Screen name="Logout" component={LogoutScreen} options={{ title: 'Logout' }} /> */}
     </Drawer.Navigator>
+    </>
   );
 }

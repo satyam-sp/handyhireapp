@@ -48,6 +48,19 @@ export const updateUserData = createAsyncThunk(
     }
 );
 
+export const sendFcmToken = createAsyncThunk(
+    'userAuth/sendFcmToken',
+    async (token: any, { getState, rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post(`/api/v1/users/update_fcm_token`, token);
+            return response.data; // Should return the updated user data
+        } catch (error: any) { // Add any to error type
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+
 
 const userAuthSlice = createSlice({
     name: 'userAuth',
@@ -86,7 +99,7 @@ const userAuthSlice = createSlice({
                 state.otpSent = true;
                 state.error = null;
             })
-            .addCase(sendOtp.rejected, (state, action) => {
+            .addCase(sendOtp.rejected, (state: any, action) => {
                 state.loading = false;
                 state.error = action.payload;
                 state.otpSent = false;
@@ -101,7 +114,7 @@ const userAuthSlice = createSlice({
                 state.token = action.payload.token;
                 state.error = null;
             })
-            .addCase(verifyOtpAndLogin.rejected, (state, action) => {
+            .addCase(verifyOtpAndLogin.rejected, (state: any, action) => {
                 state.loading = false;
                 state.user = null;
                 state.token = null;
@@ -118,10 +131,31 @@ const userAuthSlice = createSlice({
                 state.user = action.payload.employee; // Assuming the updated employee data is returned
                 state.error = null;
             })
-            .addCase(updateUserData.rejected, (state, action) => {
+            .addCase(updateUserData.rejected, (state: any, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+
+
+            //send token
+
+            .addCase(sendFcmToken.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(sendFcmToken.fulfilled, (state: any, action: any) => {
+                state.loading = false;
+                state.user = state.user ? { ...state.user, ...action.payload.user } : null
+                state.error = null;
+            })
+            .addCase(sendFcmToken.rejected, (state: any, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });
+
+
+
     },
 });
 
