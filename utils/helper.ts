@@ -22,6 +22,11 @@ export const formatToINRCurrency = (value: string) => {
     return '₹' + new Intl.NumberFormat('en-IN').format(Number(numericValue));
 };
 
+export function padNumberWithZero(num: number) {
+  return String(num).padStart(2, '0');
+}
+
+
 // --- Helper Functions ---
 // Modified truncateText to allow for line limits rather than just word limits
 export const truncateText = (text: string, maxLines: number, fontSettings: { fontSize: number, lineHeight: number, width: number }) => {

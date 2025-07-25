@@ -12,8 +12,9 @@ import { truncateText } from '../../utils/helper'; // Assuming helper.ts is in u
 import { ScrollView } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 import { getActiveJobs } from '../../slices/instantJob.slice';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder'; // Still imported, but CardSkeleton is used for rendering
 import CardSkeleton from './CardSkeleton'; // Assuming this component exists and renders the skeleton
+import UserProfileCarousel from '../../components/user-carousel';
+import { navigate } from '../../utils/navigateRef';
 
 const { width } = Dimensions.get('window');
 const activeJobCardWidth = width * 0.9; // Same as in styles
@@ -26,6 +27,10 @@ const ActivejobCards: React.FC = () => {
   useEffect(() => {
     dispatch(getActiveJobs() as any)
   }, [])
+
+	const handleCardPress = (job: any) => {
+		navigate('InstantJobDetails', { job_id: job.id })
+	}
 
   return (
     <>
@@ -74,10 +79,13 @@ const ActivejobCards: React.FC = () => {
                   {/* Width for truncation needs to consider activeJobCard's padding etc. */}
                   {truncateText(activeJob.description, 4, { fontSize: 14, lineHeight: 20, width: activeJobCardWidth - (20 * 2) })}
                 </Text>
-                <TouchableOpacity style={styles.activeJobButton}>
+								<View style={{flex: 1, flexDirection: 'row', padding: 10}}>
+                <TouchableOpacity style={styles.activeJobButton} onPress={() => handleCardPress(activeJob)}>
                   <Text style={styles.activeJobButtonText}>View Details</Text>
-                  <FontAwesome name="chevron-right" size={14} color={Colors.accentBlue} style={{ marginLeft: 5 }} />
+                  <FontAwesome name="chevron-right" size={14} color={'white'} style={{ marginLeft: 5 }} />
                 </TouchableOpacity>
+								<UserProfileCarousel />
+								</View>
               </LinearGradient>
             );
           })

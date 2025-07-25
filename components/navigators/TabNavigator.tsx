@@ -15,22 +15,20 @@ import { useNavigation } from '@react-navigation/native'; // To navigate from su
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HomeIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SearchIcon from 'react-native-vector-icons/Ionicons';
-import HistoryIcon from 'react-native-vector-icons/MaterialIcons';
+import NotificationIcon from 'react-native-vector-icons/MaterialIcons';
 import ProfileIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // For Job/Instant icons
+
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Import your screens
 import HomeScreen from '../../screens/users'; // Using HomeScreen as a placeholder for all tabs
-import CreateInstantJob from '../../screens/instant-jobs/InstantJobPostScreen'; // You'll need to create this
 import { Dimensions } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
-import useSWR from 'swr';
-import { fetchSWR } from '../../utils/helper';
-import { setUserData } from '../../slices/userAuth.slice';
-import { Alert } from 'react-native';
+import { getCurrentUser } from '../../slices/userAuth.slice';
+import NotificationListScreen from '../../screens/notifications';
 
 const Tab = createBottomTabNavigator();
 const { width } = Dimensions.get('window'); // Or 'screen' depending on your need
@@ -93,21 +91,10 @@ const TabNavigator = () => {
     const rotateAnim = useRef(new Animated.Value(0)).current; // For Plus button rotation
     const jobButtonAnim = useRef(new Animated.Value(0)).current; // For Job button vertical position/opacity
     const instantJobButtonAnim = useRef(new Animated.Value(0)).current; // For Instant Job button vertical position/opacity
-
-    const { data: user, error, isLoading, mutate } = useSWR(
-        '/api/v1/users/get_current_user',
-        fetchSWR,
-        {
-          onSuccess: (data) => {
-            dispatch(setUserData(data)); // Update Redux state
-          },
-          onError: (err) => {
-            console.error("Failed to fetch employee data:", err);
-            Alert.alert("Error", "Could not load profile data.");
-          }
-        }
-      );
-
+    useEffect(() => {
+        dispatch(getCurrentUser() as any)
+    },[])
+   
     // Function to animate showing/hiding sub-buttons
     const toggleSubButtons = useCallback(() => {
         const toValue = showSubButtons ? 0 : 1;
@@ -202,13 +189,13 @@ const TabNavigator = () => {
             <Tab.Navigator
                 screenOptions={{
                     headerShown: false,
+                    unmountOnBlur: true,
                     tabBarShowLabel: true,
                     tabBarStyle: {
                         position: 'absolute',
                         bottom: 0, // Stick to the bottom
                         left: 0,
                         right: 0,
-                        elevation: 0,
                         backgroundColor: '#ffffff',
                         height: 55 + insets.bottom,
                         paddingBottom: insets.bottom,
@@ -254,11 +241,11 @@ const TabNavigator = () => {
                     }}
                 />
                 <Tab.Screen
-                    name="History"
-                    component={HomeScreen}
+                    name="Notification"
+                    component={NotificationListScreen}
                     options={{
                         tabBarIcon: ({ color, size }) => (
-                            <HistoryIcon name="history" color={color} size={size} />
+                            <NotificationIcon name="notifications" color={color} size={size} />
                         ),
                     }}
                 />

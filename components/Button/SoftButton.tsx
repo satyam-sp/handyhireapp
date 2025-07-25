@@ -5,7 +5,7 @@ import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextS
 interface SoftButtonProps {
     title: string;
     onPress: () => void;
-    color?: 'blue' | 'red' | 'green' | 'grey'; // Define accepted colors
+    color?: 'blue' | 'red' | 'green' | 'grey' | 'orange'; // Define accepted colors
     disabled?: boolean;
     loading?: boolean;
     style?: ViewStyle | ViewStyle[]; // Allow single style object or array of style objects
@@ -26,6 +26,7 @@ const SoftButton: React.FC<SoftButtonProps> = ({
         red: '#dc3545',
         green: '#28a745',
         grey: '#6c757d',
+        orange: '#ff8833',
     };
 
     const textColorMap = {
@@ -33,6 +34,7 @@ const SoftButton: React.FC<SoftButtonProps> = ({
         red: '#ffffff',
         green: '#ffffff',
         grey: '#ffffff',
+        orange: '#ffffff',
     };
 
     return (

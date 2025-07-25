@@ -23,7 +23,6 @@ const VideoPlayerScreen: React.FC = () => {
   const videoRef = useRef<Video>(null);
 
   const { userStories } = route.params as any;
-  debugger
   // Assuming you want to play the FIRST video from the userStories array for simplicity.
   // If you want to cycle through multiple videos for a single user,
   // you'll need more complex state management (e.g., currentVideoIndex).

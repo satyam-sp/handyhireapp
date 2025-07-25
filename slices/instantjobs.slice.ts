@@ -41,9 +41,9 @@ export const getInstantJobApply = createAsyncThunk<any, any, { rejectValue: any 
 
 export const getInstantJobCancel = createAsyncThunk<any, any, { rejectValue: any }>(
   'employee@instantjobCancel',
-  async ({id, ...params}, thunkAPI) => {
+  async ({id, jobId}, thunkAPI) => {
     try {
-      const response = await axiosInstance.post(`/api/v1/instant_jobs/${id}/instant_job_applications/cancel_application`, params);
+      const response = await axiosInstance.delete(`/api/v1/instant_jobs/${jobId}/instant_job_applications/${id}/cancel_application`);
       return response.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(errorBlock(err));
@@ -53,6 +53,10 @@ export const getInstantJobCancel = createAsyncThunk<any, any, { rejectValue: any
 
 const initialState: any = {
   data: [],
+  jobsLoading: false,
+  jobsError: null,
+  jobsSuccess: false,
+
   isLoading: false,
   isError: false,
   isSuccess: false,
@@ -81,17 +85,23 @@ export const instantJobsSlice = createSlice({
   },
   extraReducers: (builder: any) => {
     builder.addCase(getInstantJobs.pending, (state: any) => {
-      state.isLoading = true;
+      state.jobsLoading = true;
+       state.jobsError = null;
+       state.jobsSuccess = false;
     });
     builder.addCase(getInstantJobs.fulfilled, (state: any, action: any) => {
-      state.isLoading = false;
-      state.isSuccess = true;
+      state.jobsLoading = false;
+      state.jobsError = null;
       state.data = action.payload;
+      state.jobsSuccess = true;
+
     });
     builder.addCase(getInstantJobs.rejected, (state: any, action: any) => {
-      state.isLoading = false;
-      state.error = action.payload.error;
-      state.isError = false;
+      state.jobsLoading = false;
+      state.jobsError = action.payload.error;
+      state.data = [];
+      state.jobsSuccess = false;
+
     });
 
     builder.addCase(getInstantJobById.pending, (state: any) => {
@@ -119,7 +129,7 @@ export const instantJobsSlice = createSlice({
       const application = action.payload.application
       state.applyJobLoading = false;
       state.isSuccess = true;
-      state.currentInstantJob = {...state.currentInstantJob, archived: application.archived,final_price: application.final_price, application_status: application.status };
+      state.currentInstantJob = {...state.currentInstantJob, application: application};
     });
     builder.addCase(getInstantJobApply.rejected, (state: any, action: any) => {
       state.applyJobLoading = false;
@@ -134,7 +144,7 @@ export const instantJobsSlice = createSlice({
     builder.addCase(getInstantJobCancel.fulfilled, (state: any, action: any) => {
       state.applyJobLoading = false;
       state.isSuccess = true;
-      state.currentInstantJob = {...state.currentInstantJob, archived: false,final_price: undefined, application_status: 'pending' };
+      state.currentInstantJob = {...state.currentInstantJob, archived: false,final_price: undefined, application: {} };
     });
     builder.addCase(getInstantJobCancel.rejected, (state: any, action: any) => {
       state.applyJobLoading = false;

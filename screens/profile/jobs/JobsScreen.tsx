@@ -1,18 +1,17 @@
 // screens/NearbyDataScreen.tsx
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Alert, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, Alert, TouchableOpacity, StyleSheet, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { requestLocationPermission, getCurrentLocation } from '../../../services/locationService';
 import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { StarRatingDisplay } from 'react-native-star-rating-widget';
-import { getDistance, getStatusColor } from '../../../utils/helper';
+import { getStatusColor } from '../../../utils/helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { getInstantJobs, setCoords } from '../../../slices/instantjobs.slice';
 import { isEmpty } from 'lodash';
-import { getStorageData } from '../../../utils/storage-helper';
 import { useInstantJobCable } from '../../../components/hooks/useInstantJobCable';
 import JobsCardSkeleton from '../../../components/skeleton/JobCard';
 
@@ -20,16 +19,15 @@ dayjs.extend(relativeTime);
 
 
 const JobsScreen = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const subscriptionRef = useRef<any>(null);
 
     const dispatch = useDispatch();
     const geocoords = useSelector((state: any) => state.instantjobs.geocoords);
-    const jobs = useSelector((state: any) => state.instantjobs.data); // assuming this holds job data
+    const { data: jobs, jobsLoading: jobsLoading, jobsError: error, jobsSuccess: success } = useSelector((state: any) => state.instantjobs); // assuming this holds job data
     const [filteredData, setFilteredData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false); // ✅ new
-
 
     useInstantJobCable(subscriptionRef)
 
@@ -37,7 +35,6 @@ const JobsScreen = () => {
         if (isRefresh) setRefreshing(true);
         try {
             await dispatch(getInstantJobs(geocode) as any);
-            await dispatch(setCoords(geocode) as any);
         } catch (err) {
             console.error("Job fetch failed", err);
         } finally {
@@ -92,6 +89,25 @@ const JobsScreen = () => {
         }
     }, [!!subscriptionRef.current])
 
+
+    const renderBadge = (obj: any) => {
+        return (obj.application_status === 'applied' || obj.application_status === 'accepted') && (
+            <View
+                style={[
+                    styles.applicationBadge,
+                    obj.application_status === 'applied'
+                        ? styles.appliedBadge
+                        : styles.approvedBadge,
+                ]}
+            >
+                <Text style={styles.applicationBadgeText}>
+                    {obj.application_status.toUpperCase()}
+                </Text>
+            </View>
+        )
+
+    }
+
     const renderItem = ({ item }: any) => {
 
         const obj = item.attributes;
@@ -108,7 +124,10 @@ const JobsScreen = () => {
                         <Text style={styles.title}>{obj.title}</Text>
 
                     </View>
+
                     <View style={styles.row}>
+                    {renderBadge(obj)}
+
                         <Text style={styles.badge}>{obj.job_category.name}</Text>
                         <View style={styles.distance}>
                             <Icon name="map-marker" size={20} color="#007bff" />
@@ -137,9 +156,10 @@ const JobsScreen = () => {
         )
     };
 
-    if (loading) return <JobsCardSkeleton />;
+    if (loading || jobsLoading) return <JobsCardSkeleton />;
+    if (error) return <Text>Error: {error.message}</Text>;
 
-    return (
+    return success && (
         <View style={styles.mainView}>
             <FlatList
                 data={filteredData}
@@ -147,6 +167,9 @@ const JobsScreen = () => {
                 renderItem={renderItem}
                 refreshing={refreshing} // ✅ new
                 onRefresh={onRefresh}   // ✅ new
+                initialNumToRender={5}     // Render 5 items initially (adjust based on screen size)
+                maxToRenderPerBatch={5}    // Render 5 more items per batch when scrolling
+                windowSize={10}
 
                 contentContainerStyle={[
                     styles.container,
@@ -256,8 +279,37 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#888',
         marginTop: 5,
-    }
+    },
+    applicationBadge: {
+        paddingVertical: 0,
+        paddingHorizontal: 10,
+        position: 'absolute', // Crucial for positioning
+        right: -10,           // Starts 10 units from the right edge
+        top: -20,             // Adjust top positioning as needed
+        zIndex: 10,          // Ensures it's above other elements
+        
+        // Shadow properties for iOS
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        
+        // Shadow properties for Android
+        elevation: 5,
+    },
+    appliedBadge: {
+        backgroundColor: '#28a745', // green
+    },
 
+    approvedBadge: {
+        backgroundColor: '#fd7e14', // orange
+    },
+
+    applicationBadgeText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 12,
+    },
 
 });
 

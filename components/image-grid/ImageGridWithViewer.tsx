@@ -1,5 +1,6 @@
 // ImageGridWithViewer.tsx
 import React, { useMemo, useState } from 'react';
+import { Text } from 'react-native';
 import {
   View,
   FlatList,

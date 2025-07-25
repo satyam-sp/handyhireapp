@@ -33,6 +33,9 @@ export default function JobDetailScreen({ route }: any) {
         if (job && job.price) {
             setPriceInput(job.price.toString()); // Ensure it's a string for TextInput
         }
+        if (job && job.application?.slot_time) {
+            setTimeSlot(job.application?.slot_time); // Ensure it's a string for TextInput
+        }
     }, [job]);
 
     const handleApply = () => {
@@ -45,13 +48,14 @@ export default function JobDetailScreen({ route }: any) {
             id: job_id,
             status: 1,
             employee_id: employee.id,
-            final_price: parseFloat(priceInput)
+            final_price: parseFloat(priceInput),
+            slot_time: timeInput
         }) as any);
         setShowApplyModal(false);
     };
 
     const handleCancel = () => {
-        dispatch(getInstantJobCancel({ id: job_id, employee_id: employee.id }) as any);
+        dispatch(getInstantJobCancel({ id: job.application.id, jobId: job.id }) as any);
     };
 
     const throttledApply = useThrottleCallback(confirmApply, 1000);
@@ -99,7 +103,7 @@ export default function JobDetailScreen({ route }: any) {
 
     if (isLoading) {
         return (
-            <AppLoader /> // Using a dedicated AppLoader component for full-screen loader
+            <AppLoader />
         );
     }
 
@@ -112,14 +116,14 @@ export default function JobDetailScreen({ route }: any) {
     }
 
     return (
-        <View style={styles.fullScreenContainer}> {/* New container to ensure flex:1 works for ScrollView */}
+        <View style={styles.fullScreenContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <Ionicons name="arrow-back" size={26} color="#333" />
             </TouchableOpacity>
 
             <ScrollView style={styles.scrollViewContent} contentContainerStyle={styles.scrollContentPadding}>
-                <View style={styles.mainContent}> {/* Wrap main content for better padding control */}
-                    <Text style={styles.title}>{job.title}</Text>
+                <View style={styles.mainContent}>
+                    <Text style={styles.title}>{job.title} <Text style={styles.jid}>#{job.jid}</Text></Text>
                     <Text style={styles.category}>{job.job_category?.name}</Text>
                     <Text style={styles.description}>{job.description}</Text>
                     <Text style={styles.price}>Price: ₹{job.price}/{job.rate_type_humanize}</Text>
@@ -130,12 +134,12 @@ export default function JobDetailScreen({ route }: any) {
                         <Text style={styles.creatorName}>Created by: {job.user?.full_name}</Text>
                         <Text style={styles.paidVerifiedText}>
                             Paid: Verified {true && (
-                                <Image source={TickMark} style={styles.tickMarkImageInline} /> // Adjust path to your tick mark image
+                                <Image source={TickMark} style={styles.tickMarkImageInline} />
                             )}
                         </Text>
                     </View>
-                    {job.application_status === 'applied' && <View style={styles.creatorBox}>
-                        <Text style={styles.finalPriceText}>You have been set price for this job price  ₹{job.final_price}/{job.rate_type_humanize} </Text>
+                    {['applied','accepted'].includes(job?.application?.status) && <View style={styles.creatorBox}>
+                        <Text style={styles.finalPriceText}>You have been set price for this job price {'\n'} ₹{job.application?.final_price}/{job.rate_type_humanize} </Text>
                     </View>}
 
                     {job.images && job.images.length > 0 && (
@@ -147,8 +151,6 @@ export default function JobDetailScreen({ route }: any) {
                     {job.latitude && job.longitude && (
                         <View style={styles.sectionCard}>
                             <View style={styles.mapContainer}>
-                                {/* It's crucial that StaticMapWithRoute has style={{flex: 1}} or
-                                    takes full height/width of its parent internally to display */}
                                 <StaticMapWithRoute />
                                 <TouchableOpacity style={styles.viewMapButton} onPress={handleViewOnMap}>
                                     <Text style={styles.viewMapButtonText}>View on Map</Text>
@@ -162,9 +164,9 @@ export default function JobDetailScreen({ route }: any) {
 
             <View style={styles.buttonContainer}>
                 <SoftButton
-                    title={job.application_status === 'applied' ? 'Cancel Application' : 'Apply for Job'}
-                    onPress={job.application_status === 'applied' ? throttledCancel : handleApply}
-                    color={job.application_status === 'applied' ? 'red' : 'blue'}
+                    title={['applied','accepted'].includes(job?.application?.status) ? 'Cancel Application' : 'Apply for Job'}
+                    onPress={['applied','accepted'].includes(job?.application?.status) ? throttledCancel : handleApply}
+                    color={['applied','accepted'].includes(job?.application?.status) ? 'red' : 'blue'}
                     disabled={applyJobLoading}
                     loading={applyJobLoading}
                 />
@@ -215,7 +217,7 @@ export default function JobDetailScreen({ route }: any) {
                                 />
                                 <SoftButton
                                     title="Confirm Apply"
-                                    onPress={throttledApply} // Use throttled version here too for modal confirm
+                                    onPress={throttledApply}
                                     color="green"
                                     disabled={applyJobLoading || !priceInput.trim() || isNaN(parseFloat(priceInput))}
                                     loading={applyJobLoading}
@@ -233,17 +235,17 @@ export default function JobDetailScreen({ route }: any) {
 const styles = StyleSheet.create({
     fullScreenContainer: {
         flex: 1,
-        backgroundColor: '#f8f8f8', // Ensure the background fills the whole screen
+        backgroundColor: '#f8f8f8',
     },
     scrollViewContent: {
-        flex: 1, // Allow ScrollView to take available space
+        flex: 1,
     },
     scrollContentPadding: {
-        paddingTop: 50, // Space for the back button at the top
-        paddingBottom: 20, // Padding at the bottom before the fixed button container
+        paddingTop: 50,
+        paddingBottom: 20,
     },
     mainContent: {
-        paddingHorizontal: 16, // Apply horizontal padding to main content
+        paddingHorizontal: 16,
     },
     centeredMessageContainer: {
         flex: 1,
@@ -257,9 +259,9 @@ const styles = StyleSheet.create({
     },
     backButton: {
         position: 'absolute',
-        top: Platform.OS === 'ios' ? 40 : 20, // Adjust for iOS status bar
+        top: Platform.OS === 'ios' ? 40 : 20,
         left: 10,
-        zIndex: 10, // Ensure back button is on top
+        zIndex: 10,
         padding: 5,
         backgroundColor: 'rgba(255,255,255,0.8)',
         borderRadius: 20,
@@ -271,11 +273,11 @@ const styles = StyleSheet.create({
         color: '#2c3e50',
     },
     category: {
-        backgroundColor: '#e0f7fa', // Light cyan
+        backgroundColor: '#e0f7fa',
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 25,
-        color: '#00796b', // Darker cyan
+        color: '#00796b',
         marginVertical: 8,
         fontSize: 14,
         alignSelf: 'flex-start',
@@ -300,7 +302,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#777',
         fontWeight: '500',
-        marginBottom: 20, // Add space before next section
+        marginBottom: 20,
     },
     creatorBox: {
         marginTop: 20,
@@ -319,23 +321,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#333',
     },
-
-    // --- NEW STYLES FOR INLINE TICK MARK ALIGNMENT ---
     paidVerifiedText: {
-        fontSize: 15, // Match or slightly larger than surrounding text
+        fontSize: 15,
         color: '#444',
-        marginTop: 6, // Maintain spacing from above
-        // backgroundColor: 'lightblue', // For debugging
+        marginTop: 6,
     },
     tickMarkImageInline: {
-        width: 16, // Adjust size as needed for your image
-        height: 16, // Adjust size as needed for your image
-        resizeMode: 'contain', // Important for image scaling
-        // These are the crucial values you'll need to TWEAK:
-        // They shift the image up/down relative to the text baseline.
-        marginTop: 3,   // Pushes the image down from its natural baseline
-        // marginBottom: -3, // Alternatively, pull it up from the bottom
-        // backgroundColor: 'pink', // For debugging exact positioning
+        width: 16,
+        height: 16,
+        resizeMode: 'contain',
+        marginTop: 3,
     },
     sectionCard: {
         backgroundColor: '#fff',
@@ -348,33 +343,16 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 2,
     },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 15,
-    },
-    tickMark: {
-        width: 20,
-        marginTop: 10,
-        height: 20
-    },
     mapContainer: {
-        height: 200, // Explicit height for map area
+        height: 200,
         borderRadius: 10,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#eee',
         position: 'relative',
-        justifyContent: 'center', // Center map content
-        alignItems: 'center', // Center map content
-        backgroundColor: '#e0e0e0', // Placeholder background
-    },
-    mapComponent: {
-        // This style is passed to StaticMapWithRoute, but StaticMapWithRoute
-        // itself MUST have flex: 1 or similar to fill its parent (mapContainer)
-        // for it to render correctly.
-        ...StyleSheet.absoluteFillObject, // Ensures StaticMapWithRoute fills the entire container
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#e0e0e0',
     },
     viewMapButton: {
         position: 'absolute',
@@ -382,7 +360,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 25,
         borderRadius: 30,
-        zIndex: 1, // Ensure the button is on top of the map
+        zIndex: 1,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -406,7 +384,6 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 3,
     },
-    // Modal Styles (minor adjustments for consistency)
     modalOverlay: {
         flex: 1,
         justifyContent: 'flex-end',
@@ -486,24 +463,9 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 5,
     },
-
-    paidVerifiedTextInline: {
-        fontSize: 16,
-        color: '#333',
-        fontWeight: '500',
-        // In React Native, text components don't support flexDirection directly for their immediate children.
-        // The inline image is treated like a character.
-        // Vertical alignment within Text is harder to control precisely.
-    },
-    // This style is for the Image component nested directly in Text
-    tickMarkImageInline: {
-        width: 16,
-        height: 16,
-        resizeMode: 'contain',
-        position: 'relative',
-        // Vertical alignment within Text can be challenging.
-        // You often have to rely on trial-and-error with marginTop/marginBottom for exact visual centering.
-        marginTop: 5, // Example adjustment, might need tuning for your specific font and image size
-        // backgroundColor: 'pink', // Use for debugging alignment
-    },
+    jid: {
+        fontSize: 15,
+        backgroundColor: '#e0f7fa',
+        
+    }
 });

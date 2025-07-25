@@ -21,6 +21,7 @@ import UserDrawerNavigator from './components/navigators/UserDrawerNavigator';
 import TabNavigator from './components/navigators/TabNavigator';
 import InstantJobPostScreen from './screens/instant-jobs/index';
 import AddressManagementScreen from './screens/address/AddressManagement';
+import InstantJobScreen from './screens/instant-job';
  type RootStackParamList = {
   Splash: undefined;
   Welcome: undefined;
@@ -34,6 +35,7 @@ import AddressManagementScreen from './screens/address/AddressManagement';
   UserProfile: undefined,
   MainTabs: undefined;
   InstantJobPost: undefined;
+  InstantJobDetails: undefined;
   AddressManagement: undefined
 };
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -55,6 +57,7 @@ export default function App() {
               <Stack.Screen name='StoriesViewer' component={StoriesViewerScreen} />
               <Stack.Screen name='UserProfile' component={UserDrawerNavigator} />
               <Stack.Screen name="EmployProfile" component={DrawerNavigator} />
+              <Stack.Screen name='InstantJobDetails' component={InstantJobScreen} />
 
               <Stack.Screen name='AddressManagement' component={AddressManagementScreen} />
 

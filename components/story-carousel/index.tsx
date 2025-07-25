@@ -91,7 +91,6 @@ const StoriesListScreen: React.FC = () => {
   );
 
 
-  debugger;
 
 
   return (

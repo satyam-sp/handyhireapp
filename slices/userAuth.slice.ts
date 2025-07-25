@@ -27,6 +27,25 @@ export const verifyOtpAndLogin = createAsyncThunk(
         }
     }
 );
+export const getCurrentUser = createAsyncThunk<any, void, { state: RootState }>(
+    'userAuth/getCurrentUser',
+    async (_, { getState, rejectWithValue }) => {
+        try {
+            const state = getState();
+            const token = state.userAuth.token; // Get token from current Redux state
+
+            // If token is required for this API call and not handled globally by axiosInstance interceptor
+            // you might need to add it to headers here. axiosInstance should ideally handle this.
+            // e.g., const response = await axiosInstance.get('/api/v1/users/get_current_user', { headers: { Authorization: `Bearer ${token}` } });
+
+            const response = await axiosInstance.get('/api/v1/users/get_current_user');
+            return response.data; // Assuming this returns the UserProfile object directly
+        } catch (error: any) {
+            console.error("Error fetching current user:", error.response?.data || error.message);
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
 
 export const updateUserData = createAsyncThunk(
     'userAuth/updateProfile',
@@ -59,8 +78,6 @@ export const sendFcmToken = createAsyncThunk(
         }
     }
 );
-
-
 
 const userAuthSlice = createSlice({
     name: 'userAuth',
@@ -135,6 +152,26 @@ const userAuthSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+
+            .addCase(getCurrentUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getCurrentUser.fulfilled, (state, action: any) => {
+                state.loading = false;
+                state.user = action.payload.user;
+                state.token = action.payload.token;
+
+                state.error = null;
+            })
+            .addCase(getCurrentUser.rejected, (state: any, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                // Optionally clear user data on rejection if the fetch implies no user is logged in/available
+                // state.user = null;
+                // state.token = null; // Only if you want to force re-login on current user fetch failure
+            })
+
 
 
 

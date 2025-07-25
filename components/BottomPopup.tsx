@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,6 @@ import {
 const { height } = Dimensions.get('window');
 
 const BottomPopup = ({ visible, slideAnim, handleVisible, children, title }: any) => {
-
- 
-
   const closeModal = () => {
     Animated.timing(slideAnim, {
       toValue: height,

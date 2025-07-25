@@ -5,6 +5,7 @@ import { errorBlock, showToastMessage } from "../utils/helper";
 import axios from "axios";
 import { getToken, removeStorageData } from "../utils/storage-helper";
 import { uploadVideo } from "./videoUpload.slice";
+import { navigationRef } from "../utils/navigateRef";
 
 export const registerEmployee = createAsyncThunk<any, any, { rejectValue: any }>(
   'register@employee',
@@ -75,6 +76,8 @@ export const uploadEmployeeImage = createAsyncThunk<any, any, { rejectValue: any
 export const logout = createAsyncThunk('logout', async () =>{
   try {
     await removeStorageData('user');
+    await removeStorageData('employee');
+    navigationRef.navigate('Welcome') 
   }catch(e){
     
   }
